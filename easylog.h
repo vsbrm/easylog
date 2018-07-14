@@ -42,20 +42,6 @@ public:
 	void log_trace (const char *a_message, const char *a_place = nullptr);
 };
 
-
-class circle_logger : public logger
-{
-	unsigned int lines_count;
-	unsigned int lines_max;
-	void write_log (const char *a_message, const char *a_level = nullptr,
-								const char *a_place = nullptr);
-public:
-	circle_logger(const char *a_file_name, unsigned int a_lines_max,
-					const char *a_default_place = nullptr);
-	~circle_logger();
-
-};
-
 class daily_logger : public logger
 {
 private:

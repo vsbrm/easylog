@@ -92,63 +92,10 @@ void logger::log_trace (const char *a_message, const char *a_place)
 		write_log(a_message, "trce", a_place);
 }
 
-
-
-circle_logger::circle_logger(const char *a_file_name, unsigned int a_lines_max,
-				const char *a_default_place)
-{
-	log_level = Lall;
-	lines_max = a_lines_max;
-	default_place = (a_default_place != nullptr) ? a_default_place : "";
-	log_file.open (a_file_name, std::fstream::in | std::fstream::out | std::fstream::app);
-	if (!log_file.is_open()) {
-		log_file.open (default_file_name, std::fstream::in | std::fstream::out | std::fstream::app);
-		if (log_file.is_open()) {
-			log_file << "can not open file: " << default_file_name << std::endl;
-		} else {
-			//throw "exception: can not open log file";
-		}
-	}
-	std::string header;
-	log_file.clear();
-	log_file.seekg(0, std::ios::beg);
-	std::getline(log_file, header);
-	lines_count = std::stol(header);
-}
-
-circle_logger::~circle_logger()
-{
-
-}
-
-void circle_logger::write_log (const char *a_message, const char *a_level,
-							const char *a_place)
-{
-	log_file << '<' << std::to_string(std::time(nullptr)) << "> ";
-	if (a_level != nullptr)
-		log_file << "[" << a_level << "]: ";
-	log_file << ((a_place != nullptr) ? a_place : default_place)  << " - ";
-	log_file << a_message;
-	log_file << std::endl;
-	if (lines_count < lines_max) {
-		++lines_count;
-		log_file.clear();
-		log_file.seekg(0, std::ios::beg);
-		log_file << lines_count << std::endl;
-	} else {
-		log_file.clear();
-		log_file.seekg(0, std::ios::beg);
-		log_file << lines_count << std::endl;
-		log_file << '\0';
-		log_file.seekg(lines_count + 1, std::ios::beg);
-	}
-}
-
-
 daily_logger::daily_logger(const char *a_dir_name, const char *a_default_place)
 {
 	default_place = (a_default_place != nullptr) ? a_default_place : "";
-	dir_name = (a_dir_name != nullptr) ? a_dir_name : ".";
+	dir_name = (a_dir_name != nullptr) ? a_dir_name : "./";
 	std::string filename = dir_name + '/';
 	std::time_t t = std::time(nullptr);
 	std::tm tm_t = *localtime(&t);
